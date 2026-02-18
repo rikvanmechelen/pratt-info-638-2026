@@ -1,6 +1,7 @@
 //framework imports
 const express = require('express');
 const handlebars = require('express-handlebars').create();
+const bodyParser = require('body-parser');
 
 //application improts
 const indexRouter = require('./routes/index');
@@ -14,6 +15,8 @@ const port = 3000;
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
+
+app.use(bodyParser.urlencoded({ extended: true }))
 
 //application setup
 app.use('/', indexRouter);
