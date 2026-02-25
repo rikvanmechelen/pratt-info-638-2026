@@ -15,8 +15,14 @@ router.get('/form', async (req, res, next) => {
 
 router.post('/create', async (req, res, next) => {
   console.log('body: ' + JSON.stringify(req.body))
-  Book.add(req.body);
+  Book.upsert(req.body);
   res.redirect(303, '/books')
+});
+
+router.get('/edit', async (req, res, next) => {
+  let bookIdx = req.query.id;
+  let book = Book.get(bookIdx);
+  res.render('books/form', { title: 'BookedIn || Books', book: book, bookIdx: bookIdx });
 });
 
 module.exports = router;
