@@ -10,7 +10,7 @@
       "name": "Start BookedIn (DEBUG MODE)",
       "runtimeExecutable": "${workspaceFolder}/node_modules/nodemon/bin/nodemon.js",
       "cwd": "${workspaceFolder}",
-      "args": ["bookin.js"]
+      "args": ["bookedin.js"]
     },
     {
       "type": "node",
