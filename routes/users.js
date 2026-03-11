@@ -1,6 +1,8 @@
 const express = require("express");
 
 const User = require("../models/user");
+const Book = require('../models/book');
+const BookUser = require('../models/book_user');
 
 const router = express.Router();
 
@@ -65,5 +67,24 @@ router.post('/logout', async (req, res, next) => {
   };
   res.redirect(303, '/');
 });
+
+router.get('/profile', async (req, res, next) => {
+  if (! req.session.currentUser) {
+    req.session.flash = {
+      type: 'info',
+      intro: 'Err!',
+      message: 'You are not logged in yet'
+    };
+    res.redirect(303, '/');
+  }
+
+  const booksUser = BookUser.AllForUser(req.session.currentUser.email);
+  booksUser.forEach((bookUser) => {
+    bookUser.book = Book.get(bookUser.bookId)
+  })
+  res.render('users/profile', { title: 'BookedIn || Profile', user: req.session.currentUser,
+      booksUser: booksUser });
+});
+
 
 module.exports = router;

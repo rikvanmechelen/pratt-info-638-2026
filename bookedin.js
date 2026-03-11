@@ -12,6 +12,7 @@ const indexRouter = require('./routes/index');
 const authorsRouter = require('./routes/authors');
 const booksRouter = require('./routes/books');
 const usersRouter = require('./routes/users');
+const booksUsersRouter = require('./routes/books_users');
 
 //framework setup
 const app = express();
@@ -70,7 +71,7 @@ app.use('/', indexRouter);
 app.use('/authors', authorsRouter);
 app.use('/books', booksRouter);
 app.use('/users', usersRouter);
-
+app.use('/books_users', booksUsersRouter);
 
 app.use((_req, res) => {
   res.status(404);
