@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const { credentials } = require('./config');
 const cookieParser = require('cookie-parser')
 const expressSession = require('express-session')
+const csrf = require('csurf')
 
 
 //application imports
@@ -45,6 +46,11 @@ app.use(expressSession({
   saveUninitialized: false,
   cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
 }));
+app.use(csrf({ cookie: true }))
+app.use((req, res, next) => {
+  res.locals._csrfToken = req.csrfToken()
+  next();
+})
 
 // session configuration
 //make it possible to use flash messages, and pass them to the view
