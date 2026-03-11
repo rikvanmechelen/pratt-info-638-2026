@@ -10,7 +10,7 @@ const expressSession = require('express-session')
 const indexRouter = require('./routes/index');
 const authorsRouter = require('./routes/authors');
 const booksRouter = require('./routes/books');
-
+const usersRouter = require('./routes/users');
 
 //framework setup
 const app = express();
@@ -49,16 +49,21 @@ app.use(expressSession({
 // session configuration
 //make it possible to use flash messages, and pass them to the view
 app.use((req, res, next) => {
-  res.locals.flash = req.session.flash
-  delete req.session.flash
-  next()
+  res.locals.flash = req.session.flash;
+  delete req.session.flash;
+  next();
 })
 
+app.use((req, res, next) => {
+  res.locals.currentUser = req.session.currentUser;
+  next();
+})
 
 //application setup
 app.use('/', indexRouter);
 app.use('/authors', authorsRouter);
 app.use('/books', booksRouter);
+app.use('/users', usersRouter);
 
 
 app.use((_req, res) => {
