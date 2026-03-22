@@ -9,7 +9,12 @@ const encryptPassword = (password, salt) => {
 }
 
 const users = [
-  {name: 'Rik', email: 'rvanmech@pratt.edu', salt: '5a5df08f62cb334487daf4071efb0447', encryptedPassword: 'd7cb0bfa77a609572cf353151c24144c1e15aa44722dd717fdfd56d7bc7f4367'}
+  {
+    name: 'Rik',
+    email: 'rvanmech@pratt.edu',
+    salt: '8c9149733079e27a9a1b0b42d5886585',
+    encryptedPassword: '553cea73b9b45a9657fb2fa8ad2dbbecd022d7cd1b6a1a9b633d2f8243347e3d'
+  }
 ]
 
 exports.all = users;
