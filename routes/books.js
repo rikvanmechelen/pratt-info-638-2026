@@ -12,7 +12,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/form', async (req, res, next) => {
-  res.render('books/form', { title: 'BookedIn || Books', authors: Author.all, genres: Genre.all });
+  let authors = await Author.all();
+  res.render('books/form', { title: 'BookedIn || Books', authors: authors, genres: Genre.all });
 });
 
 router.post('/upsert', async (req, res, next) => {
@@ -30,11 +31,12 @@ router.post('/upsert', async (req, res, next) => {
 router.get('/edit', async (req, res, next) => {
   let bookIndex = req.query.id;
   let book = Book.get(bookIndex);
+  let authors = await Author.all();
   res.render('books/form', {
     title: 'BookedIn || Books',
     book: book,
     bookIndex: bookIndex,
-    authors: Author.all,
+    authors: authors,
     genres: Genre.all
   });
 });

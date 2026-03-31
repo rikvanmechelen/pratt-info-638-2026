@@ -1,3 +1,6 @@
+const db = require('../database')
+
+
 const authors = [
   {firstName: "James", lastName: "S. A. Corey"},
   {firstName: "Craig", lastName: "Alanson"},
@@ -5,7 +8,11 @@ const authors = [
   {firstName: "John", lastName: "Scalzi"},
 ]
 
-exports.all = authors;
+exports.all = async () => {
+  const { rows } = await db.getPool().query("select * from authors order by id");
+  return db.camelize(rows);
+};
+
 exports.upsert = (author) => {
   if (author.id) {
     exports.update(author);
