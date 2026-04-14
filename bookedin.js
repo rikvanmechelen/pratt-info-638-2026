@@ -6,7 +6,6 @@ const cookieParser = require('cookie-parser')
 const expressSession = require('express-session')
 const csrf = require('csurf')
 
-
 //application imports
 const indexRouter = require('./routes/index');
 const authorsRouter = require('./routes/authors');
@@ -14,6 +13,7 @@ const booksRouter = require('./routes/books');
 const usersRouter = require('./routes/users');
 const booksUsersRouter = require('./routes/books_users');
 const genresRouter = require('./routes/genres');
+const commentsRouter = require('./routes/comments');
 
 //framework setup
 const app = express();
@@ -74,6 +74,7 @@ app.use('/books', booksRouter);
 app.use('/users', usersRouter);
 app.use('/books_users', booksUsersRouter);
 app.use('/genres', genresRouter);
+app.use('/comments', commentsRouter);
 
 app.use((_req, res) => {
   res.status(404);
