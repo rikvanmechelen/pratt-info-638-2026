@@ -1,13 +1,5 @@
 const db = require('../database')
 
-
-const authors = [
-  {firstName: "James", lastName: "S. A. Corey"},
-  {firstName: "Craig", lastName: "Alanson"},
-  {firstName: "Cixin", lastName: "Liu"},
-  {firstName: "John", lastName: "Scalzi"},
-]
-
 exports.all = async () => {
   const { rows } = await db.getPool().query("select * from authors order by id");
   return db.camelize(rows);
@@ -21,13 +13,16 @@ exports.upsert = (author) => {
   }
 }
 
-exports.add = (author) => {
-  authors.push(author);
+exports.add = async (author) => {
+  await db.getPool().query("insert into authors (first_name, last_name) values ($1, $2);",
+    [author.firstName, author.lastName]);
 };
-exports.update = (author) => {
-  author.id = parseInt(author.id);
-  authors[author.id] = author;
+
+exports.update = async (author) => {
+  await db.getPool().query("update authors set first_name = $1, last_name = $2 where id = $3;",
+    [author.firstName, author.lastName, author.id]);
 }
-exports.get = (idx) => {
-  return authors[idx];
+exports.get = async (id) => {
+  const { rows } = await db.getPool().query("select * from authors where id = $1", [id])
+  return db.camelize(rows)[0]
 }
