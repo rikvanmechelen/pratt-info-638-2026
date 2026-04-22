@@ -1,43 +1,40 @@
-const books_users = [
-  {bookId: "0", userEmail: "rvanmech@pratt.edu", status: "finished"},
-  {bookId: "1", userEmail: "rvanmech@pratt.edu", status: "reading"},
-  {bookId: "2", userEmail: "rvanmech@pratt.edu", status: "todo"},
-  {bookId: "3", userEmail: "rvanmech@pratt.edu", status: "todo"}
-];
+const db = require('../database')
+
 
 exports.statuses = [
   "todo","reading","finished"
 ]
 
-exports.add = (book_user) => {
-  books_users.push(book_user);
+exports.add = async (book_user) => {
+    await db.getPool().query("insert into books_users (book_id, user_id, read_status) values ($1, $2, $3);",
+        [book_user.bookId, book_user.userId, book_user.readStatus]);
 }
 
-exports.get = (bookId, userEmail) => {
-  return books_users.find((book_user) => {
-    return book_user.bookId == bookId && book_user.userEmail == userEmail;
-  });
+exports.get = async (bookId, userId) => {
+  const { rows } = await db.getPool().query(`select * from books_users where book_id = $1 and user_id = $2`, [bookId, userId])
+    return db.camelize(rows)[0]
 }
 
-exports.AllForUser = (userEmail) => {
-  return books_users.filter((book_user) => {
-    return book_user.userEmail == userEmail;
-  });
+exports.AllForUser = async (user) => {
+  const { rows } = await db.getPool().query(
+    `select books.title, books_users.read_status
+    from books_users
+    join books on books.id = books_users.book_id
+    where user_id = $1`
+    , [user.id])
+    return db.camelize(rows)
 }
 
-exports.update = (idx, book_user) => {
-  books_users[idx] = book_user;
+exports.update = async (bookUser) => {
+    await db.getPool().query("update books_users set read_status = $1 where id = $2;",
+        [bookUser.readStatus, bookUser.id]);
 }
 
-exports.upsert = (book_user) => {
-  let idx = books_users.findIndex((bu) => {
-    return bu.bookId == book_user.bookId &&
-           bu.userEmail == book_user.userEmail;
-  });
-  if (idx == -1) {
-    exports.add(book_user);
+exports.upsert = (bookUser) => {
+  if (bookUser.id) {
+    exports.update(bookUser);
   } else {
-    exports.update(idx,book_user);
+    exports.add(bookUser);
   }
 }
 

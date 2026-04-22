@@ -26,3 +26,11 @@ exports.get = async (id) => {
   const { rows } = await db.getPool().query("select * from authors where id = $1", [id])
   return db.camelize(rows)[0]
 }
+
+exports.allForBook = async (book) => {
+  const { rows } = await db.getPool().query(`
+    select authors.* from authors
+    JOIN authors_books on authors_books.author_id = authors.id
+    where authors_books.book_id = $1;`, [book.id]);
+  return db.camelize(rows);
+}

@@ -12,7 +12,7 @@ router.get('/register', async (req, res, next) => {
 
 router.post('/register', async (req, res, next) => {
   console.log('body: ' + JSON.stringify(req.body));
-  const user = User.getByEmail(req.body.email)
+  const user = await User.getByEmail(req.body.email)
   if (user) {
     res.render('users/register', {
       title: 'BookedIn || Login',
@@ -22,7 +22,7 @@ router.post('/register', async (req, res, next) => {
         message: `A user with this email already exists`}
     });
   } else {
-    User.add(req.body);
+    await User.add(req.body);
     req.session.flash = {
       type: 'info',
       intro: 'Success!',
@@ -38,7 +38,7 @@ router.get('/login', async (req, res, next) => {
 
 router.post('/login', async (req, res, next) => {
   console.log('body: ' + JSON.stringify(req.body));
-  let user = User.login(req.body);
+  let user = await User.login(req.body);
   if (user) {
     req.session.currentUser = user;
     req.session.flash = {

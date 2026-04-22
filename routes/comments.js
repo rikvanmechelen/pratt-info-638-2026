@@ -14,14 +14,14 @@ const express = require('express');
 
  router.get('/edit', async (req, res, next) => {
    let commentId = req.query.id;
-   let comment = Comment.get(commentId);
+   let comment = await Comment.get(commentId);
    if (! comment) {
      return notAuthorized(req, res, `/books/show/${comment.bookId}`);
    }
    if (! req.session.currentUser){
      return notAuthorized(req, res, `/`);
    }
-   if (req.session.currentUser.email != comment.userEmail){
+   if (req.session.currentUser.id != comment.userId){
      return notAuthorized(req, res, `/books/show/${comment.bookId}`);
    }
    res.render('comments/form', { title: 'BookedIn || Genres', comment: comment });
@@ -29,7 +29,11 @@ const express = require('express');
 
  router.post('/upsert', async (req, res, next) => {
    console.log('body: ' + JSON.stringify(req.body));
-   if (req.session.currentUser.email != req.body.userEmail){
+   let comment = await Comment.get(req.body.id);
+   if (comment && req.session.currentUser.id != comment.userId){
+     return notAuthorized(req, res, `/books/show/${comment.bookId}`);
+   }
+   if (req.session.currentUser.id != req.body.userId){
      return notAuthorized(req, res, `/books/show/${req.body.bookId}`);
    }
    Comment.upsert(req.body);
